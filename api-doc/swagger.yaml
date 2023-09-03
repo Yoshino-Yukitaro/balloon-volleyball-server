@@ -184,7 +184,7 @@ paths:
                 - "winner_id"
                 - "point"
               properties:
-                players:
+                player_ids:
                   type: array
                   description: "試合に参加したユーザのID一覧"
                   items:
@@ -212,7 +212,7 @@ paths:
         - "Result"
       summary: "試合結果一覧"
       operationId: "getAllResults"
-      description: "試合結果の一覧を取得する。クエリを用いることで特定のユーザの結果一覧のみに絞ることができる。"
+      description: "試合結果の一覧を取得する。クエリを用いることで特定のユーザの結果一覧のみに絞ることもできる。"
       parameters:
         - name: user_id
           in: query
