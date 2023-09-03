@@ -1,24 +1,9 @@
-# README
+# balloon-volleyball-server
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## これは何？
 
-Things you may want to cover:
+風船バレーの値保存用のサーバです。withAR ハッカソンで作成しました。
 
-* Ruby version
+## デプロイ用のコマンド
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+`gcloud run deploy --update-secrets=RAILS_MASTER_KEY=RAILS_MASTER_KEY:1 --port=3000`
