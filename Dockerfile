@@ -59,5 +59,13 @@ COPY /storage ./storage
 COPY /tmp ./tmp
 COPY /vendor ./vendor
 
+RUN if [ "${RAILS_ENV}" = "staging" ]; then \
+        cp config/credentials_stg.yml.enc config/credentials.yml.enc; \
+    elif [ "${RAILS_ENV}" = "production" ]; then \
+        cp config/credentials_prod.yml.enc config/credentials.yml.enc; \
+    else \
+        echo "おいそこのお前！これはリリース用ビルドだぞ！？"; \
+fi
+
 EXPOSE 3000
 CMD ["rails", "db:migrate", "db:seed", "server", "-b", "0.0.0.0"]
