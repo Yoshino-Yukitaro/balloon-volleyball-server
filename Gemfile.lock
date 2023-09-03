@@ -110,6 +110,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.19.0)
     msgpack (1.7.2)
+    mysql2 (0.5.5)
     net-imap (0.3.7)
       date
       net-protocol
@@ -121,6 +122,8 @@ GEM
       net-protocol
     nio4r (2.5.9)
     nokogiri (1.15.4-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
     parallel (1.23.0)
     parser (3.2.2.3)
@@ -204,7 +207,6 @@ GEM
       thor (~> 1.0)
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
-    sqlite3 (1.6.4-x86_64-darwin)
     stringio (3.0.8)
     thor (1.2.2)
     tilt (2.2.0)
@@ -220,14 +222,15 @@ GEM
 
 PLATFORMS
   x86_64-darwin-22
+  x86_64-linux-musl
 
 DEPENDENCIES
   bootsnap
   debug
+  mysql2
   puma (~> 5.0)
   rails (~> 7.0.7, >= 7.0.7.2)
   solargraph
-  sqlite3 (~> 1.4)
   tzinfo-data
 
 RUBY VERSION

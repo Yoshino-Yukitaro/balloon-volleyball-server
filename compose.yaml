@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  api-server:
+    build:
+      context: .
+      target: builder
+    environment:
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - RAILS_ENV=development
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+    tty: true
+    # stdin_openとは標準入出力とエラー出力をコンテナに結びつける設定です。
+    stdin_open: true
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: "Asia/Tokyo"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
