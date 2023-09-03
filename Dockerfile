@@ -60,4 +60,4 @@ COPY /tmp ./tmp
 COPY /vendor ./vendor
 
 EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "db:migrate", "db:seed", "server", "-b", "0.0.0.0"]
