@@ -1,0 +1,306 @@
+openapi: "3.0.3"
+
+info:
+  title: "風船バレー"
+  version: "1.0.0"
+
+tags:
+  - name: User
+    description: ユーザの情報についてのAPI
+  - name: Skill
+    description: スキルの情報についてのAPI
+  - name: Result
+    description: 試合結果についてのAPI
+
+paths:
+  "/users":
+    post:
+      tags:
+        - "User"
+      summary: "ユーザ登録"
+      operationId: "createUser"
+      description: "ユーザを登録する。"
+      requestBody:
+        description: 登録するユーザの名前
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "name"
+              properties:
+                name:
+                  type: string
+                  description: "登録するユーザの名前"
+                  example: "とりっぴー"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  "/users/{user_id}":
+    get:
+      tags:
+        - "User"
+      summary: "ユーザ情報取得"
+      operationId: "getUser"
+      description: "特定のユーザの情報を取得する。"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - "User"
+      summary: "ユーザ退会"
+      operationId: "deleteUser"
+      description: "ユーザを削除する。"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: "{}"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/users/{user_id}/skills":
+    post:
+      tags:
+        - "User"
+      summary: "ユーザのスキル登録"
+      operationId: "registerUserSkills"
+      description: "ユーザのスキルを登録する。"
+      requestBody:
+        description: 登録したいスキルのID一覧
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "skill_ids"
+              properties:
+                skill_ids:
+                  type: array
+                  description: "登録したいスキルのID一覧"
+                  items:
+                    type: integer
+                    description: "スキルID"
+                    example: 1
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: "{}"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - "User"
+      summary: "ユーザのスキル一覧"
+      operationId: "getUserSkills"
+      description: "ユーザのセットしたスキルを返す"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "ユーザのスキル一覧"
+                required:
+                  - "user_skills"
+                properties:
+                  user_skills:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Skill"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/skills":
+    get:
+      tags:
+        - "Skill"
+      summary: "スキル一覧"
+      operationId: "getAllSkills"
+      description: "スキルの一覧を取得する。"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "スキル一覧"
+                required:
+                  - "skills"
+                properties:
+                  skills:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Skill"
+  "/results":
+    post:
+      tags:
+        - "Result"
+      summary: "試合結果登録"
+      operationId: "registerResult"
+      description: "試合結果を登録する。"
+      requestBody:
+        description: 試合結果
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "player_ids"
+                - "winner_id"
+                - "point"
+              properties:
+                players:
+                  type: array
+                  description: "試合に参加したユーザのID一覧"
+                  items:
+                    type: integer
+                    description: "ユーザID"
+                    example: 1
+                winner_id:
+                  type: integer
+                  description: "勝者のユーザID"
+                  example: 1
+                point:
+                  type: integer
+                  description: "試合のポイント"
+                  example: 100
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: "{}"
+    get:
+      tags:
+        - "Result"
+      summary: "試合結果一覧"
+      operationId: "getAllResults"
+      description: "試合結果の一覧を取得する。クエリを用いることで特定のユーザの結果一覧のみに絞ることができる。"
+      parameters:
+        - name: user_id
+          in: query
+          description: "ユーザID"
+          required: false
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "試合結果一覧"
+                required:
+                  - "results"
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Result"
+components:
+  schemas:
+    User:
+      required:
+        - "id"
+        - "name"
+        - "skills"
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "とりっぴー"
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/Skill"
+    Skill:
+      required:
+        - "id"
+        - "name"
+        - "description"
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "縮小化"
+        description:
+          type: string
+          example: "ヒットした瞬間にボールを縮小化する。"
+    Result:
+      required:
+        - "id"
+        - "players"
+        - "winner_id"
+        - "point"
+        - "created_at"
+      properties:
+        id:
+          type: integer
+          example: 1
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        winner_id:
+          type: integer
+          example: 1
+        point:
+          type: integer
+          example: 100
+        created_at:
+          type: string
+          example: "2021-01-01 00:00:00"
+    Error:
+      required:
+        - "code"
+        - "message"
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "指定したIDのユーザは存在しません。"
