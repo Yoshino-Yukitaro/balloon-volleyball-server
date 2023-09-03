@@ -36,6 +36,8 @@ FROM ruby:3.1.4-alpine AS release
 ENV LANG ja-JP.UTF-8
 ENV TZ=Asia/Tokyo
 
+ENV EXEC_ENV staging
+
 RUN apk update && apk upgrade && \
     apk add --no-cache linux-headers libxml2-dev make gcc libc-dev nodejs yarn tzdata bash mysql-dev && \
     apk add --no-cache -t .build-packages --no-cache build-base curl-dev mysql-client
@@ -48,6 +50,8 @@ COPY --from=builder /usr/local/bundle /usr/local/bundle
 
 COPY config.ru .
 COPY Rakefile .
+COPY Gemfile .
+COPY Gemfile.lock .
 
 COPY /app ./app
 COPY /bin ./bin
@@ -59,13 +63,16 @@ COPY /storage ./storage
 COPY /tmp ./tmp
 COPY /vendor ./vendor
 
-RUN if [ "${RAILS_ENV}" = "staging" ]; then \
+RUN if [ "${EXEC_ENV}" = "staging" ]; then \
         cp config/credentials_stg.yml.enc config/credentials.yml.enc; \
-    elif [ "${RAILS_ENV}" = "production" ]; then \
+    elif [ "${EXEC_ENV}" = "production" ]; then \
         cp config/credentials_prod.yml.enc config/credentials.yml.enc; \
     else \
         echo "おいそこのお前！これはリリース用ビルドだぞ！？"; \
+        echo "${EXEC_ENV}"; \
 fi
 
+RUN chmod +x lib/entrypoint.sh
+
 EXPOSE 3000
-CMD ["rails", "db:migrate", "db:seed", "server", "-b", "0.0.0.0"]
+CMD ["lib/entrypoint.sh"]
