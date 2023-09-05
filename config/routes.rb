@@ -3,9 +3,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "users#index"
-  resources :users, only: [:create, :show , :destroy] do
-    get 'skills', to: 'users#skills'
-  end
-  get 'skills', to: 'skills#index'
+  resources :users, only: [:create, :show , :destroy]
   resources :results, only: [:index, :create]
 end

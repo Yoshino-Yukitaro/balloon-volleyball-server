@@ -7,8 +7,6 @@ info:
 tags:
   - name: User
     description: ユーザの情報についてのAPI
-  - name: Skill
-    description: スキルの情報についてのAPI
   - name: Result
     description: 試合結果についてのAPI
 
@@ -80,92 +78,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  "/users/{user_id}/skills":
-    post:
-      tags:
-        - "User"
-      summary: "ユーザのスキル登録"
-      operationId: "registerUserSkills"
-      description: "ユーザのスキルを登録する。"
-      requestBody:
-        description: 登録したいスキルのID一覧
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - "skill_ids"
-              properties:
-                skill_ids:
-                  type: array
-                  description: "登録したいスキルのID一覧"
-                  items:
-                    type: integer
-                    description: "スキルID"
-                    example: 1
-      responses:
-        "201":
-          description: "Created"
-          content:
-            application/json:
-              schema:
-                type: object
-                example: "{}"
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-    get:
-      tags:
-        - "User"
-      summary: "ユーザのスキル一覧"
-      operationId: "getUserSkills"
-      description: "ユーザのセットしたスキルを返す"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                description: "ユーザのスキル一覧"
-                required:
-                  - "user_skills"
-                properties:
-                  user_skills:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Skill"
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  "/skills":
-    get:
-      tags:
-        - "Skill"
-      summary: "スキル一覧"
-      operationId: "getAllSkills"
-      description: "スキルの一覧を取得する。"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                description: "スキル一覧"
-                required:
-                  - "skills"
-                properties:
-                  skills:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Skill"
   "/results":
     post:
       tags:
@@ -181,7 +93,6 @@ paths:
               type: object
               required:
                 - "player_ids"
-                - "winner_id"
                 - "point"
               properties:
                 player_ids:
@@ -191,10 +102,6 @@ paths:
                     type: integer
                     description: "ユーザID"
                     example: 1
-                winner_id:
-                  type: integer
-                  description: "勝者のユーザID"
-                  example: 1
                 point:
                   type: integer
                   description: "試合のポイント"
@@ -242,7 +149,6 @@ components:
       required:
         - "id"
         - "name"
-        - "skills"
       properties:
         id:
           type: integer
@@ -250,30 +156,10 @@ components:
         name:
           type: string
           example: "とりっぴー"
-        skills:
-          type: array
-          items:
-            $ref: "#/components/schemas/Skill"
-    Skill:
-      required:
-        - "id"
-        - "name"
-        - "description"
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "縮小化"
-        description:
-          type: string
-          example: "ヒットした瞬間にボールを縮小化する。"
     Result:
       required:
         - "id"
         - "players"
-        - "winner_id"
         - "point"
         - "created_at"
       properties:
@@ -284,9 +170,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/User"
-        winner_id:
-          type: integer
-          example: 1
         point:
           type: integer
           example: 100
