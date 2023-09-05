@@ -1,9 +1,18 @@
 class ResultsController < ApplicationController
   def index
-    render json: {results: [{ id: 1, winner_id: 1, point: 100, created_at: Time.zone.now, players: [{id: 1, name: 'John Doe', skills: [{ id: 1, name: "縮小化", description: "ヒットした瞬間にボールを縮小化する。" }]}] }]}
+    result = Result.eager_load(:users).all
+    render json: { results: result.map{|r| r.attributes.merge({players: r.users})} }
   end
 
   def create
+    player_ids = params[:player_ids]
+    players = User.where(id: player_ids)
+    ApplicationRecord.transaction do
+      result = Result.create(point: params[:point])
+      players.each do |player|
+        Participant.create(user: player, result: result)
+      end
+    end
     render json: {}, status: :created
   end
 end
